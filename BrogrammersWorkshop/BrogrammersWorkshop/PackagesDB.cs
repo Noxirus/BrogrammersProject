@@ -32,7 +32,7 @@ namespace BrogrammersWorkshop
                         if (reader.Read())
                         {
                             pkg = new Packages();
-                            pkg.PackageId = (int)reader["PackageID"];
+                            pkg.PackageId = (int)reader["PackageId"];
                             pkg.PkgName = reader["PkgName"].ToString();
                             //taking in account potential null values for dates
                             if (reader["PkgStartDate"] == DBNull.Value)
@@ -54,7 +54,6 @@ namespace BrogrammersWorkshop
                             pkg.PkgDesc = reader["PkgDesc"].ToString();
                             pkg.PkgBasePrice = Convert.ToDecimal(reader["PkgBasePrice"]);
                             pkg.pkgAgencyComission = Convert.ToDecimal(reader["PkgAgencyComission"]);
-
                         }
                     }
                 }
