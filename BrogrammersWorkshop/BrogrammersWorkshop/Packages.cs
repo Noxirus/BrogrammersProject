@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrogrammersWorkshop
 {
-    class Packages
+    public class Packages
     {
         //Get and set values for the table
         public int PackageId { get; set; }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace BrogrammersWorkshop
 {
     //get all packages for a list and return the list
-    class PackagesDB
+    public class PackagesDB
     {
         public static List<Packages> GetPackages()
         {
