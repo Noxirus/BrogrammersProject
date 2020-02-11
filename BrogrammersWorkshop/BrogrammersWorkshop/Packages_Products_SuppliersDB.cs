@@ -11,26 +11,33 @@ namespace BrogrammersWorkshop
     public class Packages_Products_SuppliersDB
     {
         //retrieve a list of packages products and suppliers for the table
-        public static List<Packages_Products_Suppliers> GetPackProductsSuppliers()
+        public static List<PackagesProductInfo> GetPackProductsSuppliers()
         {
-            List<Packages_Products_Suppliers> packProdSup = new List<Packages_Products_Suppliers>(); //empty list
-            Packages_Products_Suppliers pkgProdSup; // aux for reading
+            List<PackagesProductInfo> packProdSup = new List<PackagesProductInfo>(); //empty list
+            PackagesProductInfo pkgInfo; // aux for reading
 
             using (SqlConnection connection = TravelExpertsDB.GetConnection())
             {
-                string query = "SELECT * " +
-                               "FROM Packages_Products_Suppliers " +
+                string query = "SELECT PackageId, SupName, ProdName " +
+                               "FROM Packages_Products_Suppliers AS pps JOIN Products_Suppliers AS ps " +
+                               "ON pps.ProductSupplierId = ps.ProductSupplierId " +
+                               "join Suppliers AS sup " +
+                               "ON ps.SupplierId = sup.SupplierId " +
+                               "join Products AS p " +
+                               "ON ps.ProductId = p.ProductId " +
                                "ORDER BY PackageId";
+                
                 using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
                     connection.Open();
                     SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                     while (reader.Read())
                     {
-                        pkgProdSup = new Packages_Products_Suppliers();
-                        pkgProdSup.PackageId = (int)reader["PackageId"];
-                        pkgProdSup.ProductSupplierId = (int)reader["ProductSupplierId"];
-                        packProdSup.Add(pkgProdSup);
+                        pkgInfo = new PackagesProductInfo();
+                        pkgInfo.PackageId = (int)reader["PackageId"];
+                        pkgInfo.SupName = reader["SupName"].ToString();
+                        pkgInfo.ProdName = reader["ProdName"].ToString();
+                        packProdSup.Add(pkgInfo);
                     }
                 }
             }

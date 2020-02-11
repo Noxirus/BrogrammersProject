@@ -11,26 +11,29 @@ namespace BrogrammersWorkshop
     public class Products_SuppliersDB
     {
         //retrieve a list of packages products and suppliers for the table
-        public static List<Products_Suppliers> GetProductsSuppliers()
+        public static List<PackagesProductInfo> GetProductsSuppliers()
         {
-            List<Products_Suppliers> ProdSup = new List<Products_Suppliers>(); //empty list
-            Products_Suppliers prodSup; // aux for reading
+            List<PackagesProductInfo> ProdSup = new List<PackagesProductInfo>(); //empty list
+            PackagesProductInfo prodSup; // aux for reading
 
             using (SqlConnection connection = TravelExpertsDB.GetConnection())
             {
-                string query = "SELECT * " +
-                               "FROM Products_Suppliers " +
+                string query = "SELECT ProductSupplierId, ProdName, SupName " +
+                               "FROM Products_Suppliers AS ps join Suppliers AS s " +
+                               "ON ps.SupplierId = s.SupplierId join Products AS p " +
+                               "ON ps.ProductId = p.ProductId " +
                                "ORDER BY ProductSupplierId";
+
                 using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
                     connection.Open();
                     SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                     while (reader.Read())
                     {
-                        prodSup = new Products_Suppliers();
+                        prodSup = new PackagesProductInfo();
                         prodSup.ProductSupplierId = (int)reader["ProductSupplierId"];
-                        prodSup.ProductId = (int)reader["ProductId"];
-                        prodSup.SupplierId = (int)reader["SupplierId"];
+                        prodSup.ProdName = reader["ProdName"].ToString();
+                        prodSup.SupName = reader["SupName"].ToString();
                         ProdSup.Add(prodSup);
                     }
                 }

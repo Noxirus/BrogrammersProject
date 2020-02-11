@@ -19,7 +19,7 @@ namespace BrogrammersWorkshop
 
 
         private List<Packages> pack = PackagesDB.GetPackages();
-        private List<Packages_Products_Suppliers> packProdSupp = Packages_Products_SuppliersDB.GetPackProductsSuppliers();
+        private List<PackagesProductInfo> packProdSupp = Packages_Products_SuppliersDB.GetPackProductsSuppliers();
 
         private void Form1_Load(object sender, EventArgs e)
         {
