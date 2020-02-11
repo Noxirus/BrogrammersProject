@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrogrammersWorkshop
 {
-    class Packages
+    public class Packages
     {
         //Get and set values for the table
         public int PackageId { get; set; }
@@ -15,6 +15,6 @@ namespace BrogrammersWorkshop
         public DateTime? PkgEndDate { get; set; }
         public string PkgDesc { get; set; }
         public decimal PkgBasePrice { get; set; }
-        public decimal pkgAgencyComission { get; set; }
+        public decimal PkgAgencyComission { get; set; }
     }
 }

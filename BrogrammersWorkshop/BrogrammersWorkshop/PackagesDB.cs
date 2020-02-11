@@ -8,10 +8,41 @@ using System.Threading.Tasks;
 
 namespace BrogrammersWorkshop
 {
-    class PackagesDB
+    //get all packages for a list and return the list
+    public class PackagesDB
     {
-        // retrieve a single order data
-        public static Packages GetPackage(int PackageID)
+        public static List<Packages> GetPackages()
+        {
+            List<Packages> packages = new List<Packages>(); //empty list
+            Packages pkg; // aux for reading
+
+            using (SqlConnection connection = TravelExpertsDB.GetConnection())
+            {
+                string query = "SELECT * " +
+                               "FROM Packages " +
+                               "ORDER BY PackageId";
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                    while (reader.Read())
+                    {
+                        pkg = new Packages();
+                        pkg.PackageId = (int)reader["PackageId"];
+                        pkg.PkgName = reader["PkgName"].ToString();
+                        pkg.PkgStartDate = (DateTime)reader["PkgStartDate"];
+                        pkg.PkgEndDate = (DateTime)reader["PkgEndDate"];
+                        pkg.PkgDesc = reader["PkgDesc"].ToString();
+                        pkg.PkgBasePrice = (decimal)reader["PkgBasePrice"];
+                        pkg.PkgAgencyComission = (decimal)reader["PkgAgencyCommission"];
+                        packages.Add(pkg);
+                    }
+                }
+            }
+            return packages;
+        }
+// retrieve a single packages data
+public static Packages GetPackage(int PackageID)
         {
             //creating the object to store the orders information
             Packages pkg = null;
@@ -53,7 +84,7 @@ namespace BrogrammersWorkshop
                             }
                             pkg.PkgDesc = reader["PkgDesc"].ToString();
                             pkg.PkgBasePrice = Convert.ToDecimal(reader["PkgBasePrice"]);
-                            pkg.pkgAgencyComission = Convert.ToDecimal(reader["PkgAgencyComission"]);
+                            pkg.PkgAgencyComission = Convert.ToDecimal(reader["PkgAgencyComission"]);
                         }
                     }
                 }
@@ -77,7 +108,7 @@ namespace BrogrammersWorkshop
                     cmd.Parameters.AddWithValue("@PkgEndDate", pkg.PkgEndDate);
                     cmd.Parameters.AddWithValue("@PkgDesc", pkg.PkgDesc);
                     cmd.Parameters.AddWithValue("@PkgBasePrice", pkg.PkgBasePrice);
-                    cmd.Parameters.AddWithValue("@PkgAgencyComission", pkg.pkgAgencyComission);
+                    cmd.Parameters.AddWithValue("@PkgAgencyComission", pkg.PkgAgencyComission);
                     connection.Open();
                     //cmd.ExecuteNonQuery(); // INSERT statement
                     packageID = (int)cmd.ExecuteScalar(); // fixes problem of retrieving ID
@@ -104,7 +135,7 @@ namespace BrogrammersWorkshop
                     "AND PkgEndDate = @PkgEndDate " +
                     "AND PkgDesc = @PkgDesc " +
                     "AND PkgBasePrice = @PkgBasePrice " +
-                    "AND pkAgencyComission = @pkAgencyComission";
+                    "AND PkAgencyComission = @PkAgencyComission";
 
                 using (SqlCommand cmd = new SqlCommand(deleteStatement, connection))
                 {
@@ -114,7 +145,7 @@ namespace BrogrammersWorkshop
                     cmd.Parameters.AddWithValue("@PkgEndDate", pkg.PkgEndDate);
                     cmd.Parameters.AddWithValue("@PkgDesc", pkg.PkgDesc);
                     cmd.Parameters.AddWithValue("@PkgBasePrice", pkg.PkgBasePrice);
-                    cmd.Parameters.AddWithValue("@PkgAgencyComission", pkg.pkgAgencyComission);
+                    cmd.Parameters.AddWithValue("@PkgAgencyComission", pkg.PkgAgencyComission);
                     connection.Open();
                     count = cmd.ExecuteNonQuery(); // DELETE statement return # affected rows
                 }
@@ -149,14 +180,14 @@ namespace BrogrammersWorkshop
                     cmd.Parameters.AddWithValue("@newPkgEndDate", newPkg.PkgEndDate);
                     cmd.Parameters.AddWithValue("@newPkgDesc", newPkg.PkgDesc);
                     cmd.Parameters.AddWithValue("@newPkgBasePrice", newPkg.PkgBasePrice);
-                    cmd.Parameters.AddWithValue("@newPkgAgencyComission", newPkg.pkgAgencyComission);
+                    cmd.Parameters.AddWithValue("@newPkgAgencyComission", newPkg.PkgAgencyComission);
                     cmd.Parameters.AddWithValue("@oldPackageId", oldPkg.PackageId);
                     cmd.Parameters.AddWithValue("@oldPkgName", oldPkg.PkgName);
                     cmd.Parameters.AddWithValue("@oldPkgStartDate", oldPkg.PkgStartDate);
                     cmd.Parameters.AddWithValue("@oldPkgEndDate", oldPkg.PkgEndDate);
                     cmd.Parameters.AddWithValue("@oldPkgDesc", oldPkg.PkgDesc);
                     cmd.Parameters.AddWithValue("@oldPkgBasePrice", oldPkg.PkgBasePrice);
-                    cmd.Parameters.AddWithValue("@oldPkgAgencyComission", oldPkg.pkgAgencyComission);
+                    cmd.Parameters.AddWithValue("@oldPkgAgencyComission", oldPkg.PkgAgencyComission);
                     connection.Open();
                     count = cmd.ExecuteNonQuery(); // returns how many rows updated
                 }
