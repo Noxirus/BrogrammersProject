@@ -72,6 +72,70 @@ namespace BrogrammersWorkshop
                 }
             }
             return pkgProdSup;
-        }// Get Packages and suppliers method completed
+        }
+        // add item to table
+        public static int AddPackProdSup(Packages_Products_Suppliers pps)
+        {
+            int packageID = -1;
+            using (SqlConnection connection = TravelExpertsDB.GetConnection())
+            {
+                string insertStatement =
+                    "INSERT INTO Packages_Products_Suppliers(ProductSupplierId) " +
+                    "VALUES(@ProductSupplierId)";
+                using (SqlCommand cmd = new SqlCommand(insertStatement, connection))
+                {
+                    cmd.Parameters.AddWithValue("@ProductSupplierId", pps.ProductSupplierId);
+
+                    connection.Open();
+                    cmd.ExecuteNonQuery(); // INSERT statement
+                   // packageID = (int)cmd.ExecuteScalar(); // Its either nonquery or scalar, check this
+                }
+            }
+
+            return packageID;
+        }
+        // delete item from table
+        public static bool DeletePackProdSup(Packages_Products_Suppliers pps)
+        {
+            int count = 0; // how many rows deleted
+            using (SqlConnection connection = TravelExpertsDB.GetConnection())
+            {
+                string deleteStatement =
+                    "DELETE FROM Packages_Products_Suppliers " +
+                    "WHERE PackageId = @PackageId " + // to identify record
+                    "AND ProductSupplierId = @ProductSupplierId"; // the remaining conditions - for optimistic concurrency
+
+                using (SqlCommand cmd = new SqlCommand(deleteStatement, connection))
+                {
+                    cmd.Parameters.AddWithValue("@PackageId", pps.PackageId);
+                    cmd.Parameters.AddWithValue("@ProductSupplierId", pps.ProductSupplierId);
+                    connection.Open();
+                    count = cmd.ExecuteNonQuery(); // DELETE statement return # affected rows
+                }
+            }
+            return (count > 0);
+        }
+        // update table
+        public static bool UpdatePackProdSup(Packages_Products_Suppliers oldpps, Packages_Products_Suppliers newpps)
+        {
+            int count; // how many rows updated
+            using (SqlConnection connection = TravelExpertsDB.GetConnection())
+            {
+                string updateStatement =
+                    "UPDATE Packages_Products_Suppliers SET " +
+                    "ProductSupplierId = @newProductSupplierId, " +
+                    "WHERE PackageId = @PackageId " + // to identify record
+                    "AND ProductSupplierId = @oldProductSupplierId"; // remainig conditions - otimistic concurrency
+                using (SqlCommand cmd = new SqlCommand(updateStatement, connection))
+                {
+                    cmd.Parameters.AddWithValue("@newProductSupplierId", newpps.ProductSupplierId);
+                    cmd.Parameters.AddWithValue("@PackageId", oldpps.PackageId);
+                    cmd.Parameters.AddWithValue("@oldProductSupplierId", oldpps.ProductSupplierId);
+                    connection.Open();
+                    count = cmd.ExecuteNonQuery(); // returns how many rows updated
+                }
+            }
+            return (count > 0);
+        }
     }
 }
